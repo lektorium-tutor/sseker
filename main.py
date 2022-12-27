@@ -28,7 +28,7 @@ logger = logging.getLogger('SSEKER')
 EDUCONT_BASE_URL = os.getenv('EDUCONT_BASE_URL', 'https://api.dev.educont.ru')
 LMS_BASE_URL = os.getenv('LMS_BASE_URL', 'http://local.lektorium.tv:8000')
 tz = timezone('Europe/Moscow')
-SSE_PATH = f'{EDUCONT_BASE_URL}/api/v1/public/sse/connect'
+SSE_PATH = bytes(f'{EDUCONT_BASE_URL}/api/v1/public/sse/connect', 'UTF-8')  # bytes for pycurl
 TOKEN_PATH = f'{LMS_BASE_URL}/lekt/api/token?path={SSE_PATH}&method=GET'
 
 
@@ -48,12 +48,14 @@ def get_headers():
 if __name__ == '__main__':
     cmd = f'curl  --location --request GET {SSE_PATH} {get_headers()}'
 
+
     def sender(conn):
         c = pycurl.Curl()
         c.setopt(c.URL, SSE_PATH)
         c.setopt(c.WRITEFUNCTION, conn.send)
         c.setopt(pycurl.HTTPHEADER, get_headers())
         c.setopt(c.CAINFO, certifi.where())
+        c.setopt(c.VERBOSE, True)
         c.perform()
         c.close()
         conn.close()
