@@ -24,7 +24,7 @@ EDUCONT_BASE_URL = os.getenv('EDUCONT_BASE_URL', 'https://api.dev.educont.ru')
 LMS_BASE_URL = os.getenv('LMS_BASE_URL', 'http://local.lektorium.tv:8000')
 tz = timezone('Europe/Moscow')
 SSE_PATH = f'{EDUCONT_BASE_URL}/api/v1/public/sse/connect'
-TOKEN_PATH = f'http://lms/lekt/api/token?path={SSE_PATH}&method=GET'
+TOKEN_PATH = f'{LMS_BASE_URL}/lekt/api/token?path={SSE_PATH}&method=GET'
 
 
 def get_token():
