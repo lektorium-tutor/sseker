@@ -17,13 +17,14 @@ import pycurl
 import requests
 from pytz import timezone
 
-logging.basicConfig(filename='sseker.log',
-                    filemode='a',
-                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-                    datefmt='%H:%M:%S',
-                    level=logging.DEBUG)
-
 logger = logging.getLogger('SSEKER')
+logger.setLevel(logging.DEBUG)
+
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 EDUCONT_BASE_URL = os.getenv('EDUCONT_BASE_URL', 'https://api.dev.educont.ru')
 LMS_BASE_URL = os.getenv('LMS_BASE_URL', 'http://local.lektorium.tv:8000')
