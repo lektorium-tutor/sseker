@@ -76,8 +76,10 @@ if __name__ == '__main__':
 
             data = json.loads(data)
             r = requests.post(SSE_ENDPOINT, json={'profile_id': data.get('profileId'), 'status': data.get('status')})
-            # TODO: проверить статус отправки, отправить повторно n раз, если неуспешно
-            logger.info(f'Recieved event: {data}')
+            if r.status_code == 200:# TODO: проверить статус отправки, отправить повторно n раз, если неуспешно
+                logger.info(f'Recieved event: {data}')
+            else:
+                logger.error(f'Unsuccessfull request: {r.status_code} - {r.text}')
 
 
     sse_listener, api_feeder = multiprocessing.Pipe()
