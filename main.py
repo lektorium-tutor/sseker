@@ -90,10 +90,6 @@ if __name__ == '__main__':
     stream.start()
     handler.start()
 
+    stream.join()
     handler.join()
 
-    while True:
-        stream.join()
-        if stream.is_alive():
-            logger.warning("Stream is alive")
-            time.sleep(1)
