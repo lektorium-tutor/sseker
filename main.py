@@ -77,7 +77,10 @@ if __name__ == '__main__':
             if data.startswith('data:'):
                 data = data[len('data:'):]
 
+            logger.debug(f'data: {data}')
+
             data = json.loads(data)
+
             client = requests.session()
             client.get(LMS_BASE_URL)
             csrftoken = client.cookies['csrftoken']
