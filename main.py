@@ -82,7 +82,7 @@ if __name__ == '__main__':
                 logger.info(f'Recieved event: {data}')
             else:
                 logger.error(f'Unsuccessfull request: {r.status_code} - {http_client.responses[r.status_code]}')
-                logger.debug(f'{r.json()}')
+                logger.debug(f'{r.text}')
 
 
     sse_listener, api_feeder = multiprocessing.Pipe()
