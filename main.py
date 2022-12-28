@@ -81,7 +81,7 @@ if __name__ == '__main__':
             client = requests.session()
             client.get(LMS_BASE_URL)
             csrftoken = client.cookies['csrftoken']
-            r = requests.post(SSE_ENDPOINT, json={'profile_id': data.get('profileId'), 'status': data.get('status'), 'csrfmiddlewaretoken': csrftoken})
+            r = client.post(SSE_ENDPOINT, data={'profile_id': data.get('profileId'), 'status': data.get('status'), 'csrfmiddlewaretoken': csrftoken})
             if r.status_code == 200:  # TODO: проверить статус отправки, отправить повторно n раз, если неуспешно
                 logger.info(f'Recieved event: {data}')
             else:
