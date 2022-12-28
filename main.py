@@ -10,9 +10,9 @@ import logging
 import multiprocessing
 import os
 import sys
+from http import client as http_client
 
 import certifi
-from http import client as http_client
 import pycurl
 import requests
 from pytz import timezone
@@ -69,7 +69,6 @@ if __name__ == '__main__':
     def receiver(conn):
         while 1:
 
-
             data = conn.recv().decode('utf-8')
 
             if len(data.strip()) < 10:
@@ -82,7 +81,7 @@ if __name__ == '__main__':
             client = requests.session()
             client.get(LMS_BASE_URL)
             csrftoken = client.cookies['csrftoken']
-            r = client.post(SSE_ENDPOINT, json={'profile_id': data.get('profileId'), 'status': data.get('status'), 'csrfmiddlewaretoken': csrftoken})
+            r = requests.post(SSE_ENDPOINT, json={'profile_id': data.get('profileId'), 'status': data.get('status'), 'csrfmiddlewaretoken': csrftoken})
             if r.status_code == 200:  # TODO: проверить статус отправки, отправить повторно n раз, если неуспешно
                 logger.info(f'Recieved event: {data}')
             else:
