@@ -10,9 +10,9 @@ import logging
 import multiprocessing
 import os
 import sys
-import time
 
 import certifi
+import httplib
 import pycurl
 import requests
 from pytz import timezone
@@ -35,10 +35,11 @@ SSE_ENDPOINT = f'{LMS_BASE_URL}/lekt/api/sse'
 
 
 def get_token():
-    logger.warning(TOKEN_PATH)
+    logger.debug(f'Token_path: {TOKEN_PATH}')
     r = requests.get(TOKEN_PATH, )
 
     if r.status_code == 200:
+        logger.info(f'Recieved token: {r.json()}')
         return r.json()
     raise RuntimeError('Can\'t obtain a token')
 
@@ -61,6 +62,7 @@ if __name__ == '__main__':
         c.perform()
         c.close()
         conn.close()
+        logger.error('SSE connection down. Exit.')
         sys.exit('Stream down')
 
 
@@ -76,10 +78,11 @@ if __name__ == '__main__':
 
             data = json.loads(data)
             r = requests.post(SSE_ENDPOINT, json={'profile_id': data.get('profileId'), 'status': data.get('status')})
-            if r.status_code == 200:# TODO: проверить статус отправки, отправить повторно n раз, если неуспешно
+            if r.status_code == 200:  # TODO: проверить статус отправки, отправить повторно n раз, если неуспешно
                 logger.info(f'Recieved event: {data}')
             else:
-                logger.error(f'Unsuccessfull request: {r.status_code} - {r.text}')
+                logger.error(f'Unsuccessfull request: {r.status_code} - {httplib.responses[r.status_code]}')
+                logger.debug(f'{r.json()}')
 
 
     sse_listener, api_feeder = multiprocessing.Pipe()
@@ -92,4 +95,3 @@ if __name__ == '__main__':
 
     stream.join()
     handler.join()
-
