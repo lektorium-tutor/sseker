@@ -31,6 +31,7 @@ LMS_BASE_URL = os.getenv('LMS_BASE_URL', 'http://local.lektorium.tv:8000')
 tz = timezone('Europe/Moscow')
 SSE_PATH = bytes(f'{EDUCONT_BASE_URL}/api/v1/public/sse/connect', 'UTF-8')  # bytes for pycurl
 TOKEN_PATH = f'{LMS_BASE_URL}/lekt/api/token?path={SSE_PATH}&method=GET'
+SSE_ENDPOINT = f'{LMS_BASE_URL}/lekt/api/sse'
 
 
 def get_token():
@@ -43,7 +44,7 @@ def get_token():
 
 
 def get_headers():
-    return ["Content-Type: text/event-stream", f"Authorization: {get_token()}"]
+    return ['Content-Type: text/event-stream', f'Authorization: {get_token()}']
 
 
 if __name__ == '__main__':
@@ -60,7 +61,7 @@ if __name__ == '__main__':
         c.perform()
         c.close()
         conn.close()
-        sys.exit("Stream down")
+        sys.exit('Stream down')
 
 
     def receiver(conn):
@@ -73,8 +74,10 @@ if __name__ == '__main__':
             if data.startswith('data:'):
                 data = data[len('data:'):]
 
-            print(json.dumps(json.loads(data), sort_keys=True, indent=4))
-            logger.info(f"Recieved event: {data}")
+            data = json.loads(data)
+            r = requests.post(SSE_ENDPOINT, json={'profile_id': data.get('profileId'), 'status': data.get('status')})
+            # TODO: проверить статус отправки, отправить повторно n раз, если неуспешно
+            logger.info(f'Recieved event: {data}')
 
 
     sse_listener, api_feeder = multiprocessing.Pipe()
