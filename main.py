@@ -31,7 +31,7 @@ LMS_BASE_URL = os.getenv('LMS_BASE_URL', 'http://local.lektorium.tv:8000')
 tz = timezone('Europe/Moscow')
 SSE_PATH = bytes(f'{EDUCONT_BASE_URL}/api/v1/public/sse/connect', 'UTF-8')  # bytes for pycurl
 TOKEN_PATH = f'{LMS_BASE_URL}/lekt/api/token?path={SSE_PATH}&method=GET'
-SSE_ENDPOINT = f'{LMS_BASE_URL}/lekt/api/sse'
+SSE_ENDPOINT = f'{LMS_BASE_URL}/lekt/sse'
 
 
 def get_token():
@@ -81,12 +81,12 @@ if __name__ == '__main__':
 
             data = json.loads(data)
 
-            client = requests.session()
-            client.get(LMS_BASE_URL)
-            csrftoken = client.cookies['csrftoken']
-            client.headers.update({'X-CSRFToken': csrftoken})
+            # client = requests.session()
+            # client.get(LMS_BASE_URL)
+            # csrftoken = client.cookies['csrftoken']
+            # client.headers.update({'X-CSRFToken': csrftoken})
 
-            r = client.post(SSE_ENDPOINT, data={'profile_id': data.get('profileId'), 'status': data.get('status'), 'csrfmiddlewaretoken': csrftoken})
+            r = requests.post(SSE_ENDPOINT, data={'profile_id': data.get('profileId'), 'status': data.get('status')})
             if r.status_code == 200:  # TODO: проверить статус отправки, отправить повторно n раз, если неуспешно
                 logger.info(f'Recieved event: {data}')
             else:
