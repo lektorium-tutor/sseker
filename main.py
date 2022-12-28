@@ -12,7 +12,7 @@ import os
 import sys
 
 import certifi
-import httplib
+from http import client as http_client
 import pycurl
 import requests
 from pytz import timezone
@@ -81,7 +81,7 @@ if __name__ == '__main__':
             if r.status_code == 200:  # TODO: проверить статус отправки, отправить повторно n раз, если неуспешно
                 logger.info(f'Recieved event: {data}')
             else:
-                logger.error(f'Unsuccessfull request: {r.status_code} - {httplib.responses[r.status_code]}')
+                logger.error(f'Unsuccessfull request: {r.status_code} - {http_client.responses[r.status_code]}')
                 logger.debug(f'{r.json()}')
 
 
