@@ -26,7 +26,7 @@ formatter = logging.Formatter('%(asctime)s,%(msecs)d %(name)s %(levelname)s %(me
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-EDUCONT_BASE_URL = os.getenv('EDUCONT_BASE_URL', 'https://api.dev.educont.ru')
+EDUCONT_BASE_URL = os.getenv('EDUCONT_BASE_URL', 'https://api.educont.ru')
 LMS_BASE_URL = os.getenv('LMS_BASE_URL', 'http://local.lektorium.tv:8000')
 tz = timezone('Europe/Moscow')
 SSE_PATH = bytes(f'{EDUCONT_BASE_URL}/api/v1/public/sse/connect', 'UTF-8')  # bytes for pycurl
